@@ -1,3 +1,11 @@
 # Mutual-Fund-Screening-Classification
 Este ejericio evalúa cuatro modelos de clasificación (CART, SVM, KNN y Random Forest) entrenados sobre una base de 522 fondos mutuos estadounidenses ("MF_US_v1"), con el objetivo de predecir si un fondo supera o no, en retorno anualizado a 5 años, al benchmark de referencia (IVV, iShares Core S&P 500 ETF, con retorno de 13,41% anualizado). De los 522 fondos, 112 (21,5%) superaron al benchmark (clase "1") y 410 (78,5%) no lo hicieron (clase "-1"), un desbalance relevante que condiciona la lectura de todas las métricas.
 Los cuatro modelos coinciden en un hallazgo central: las tres variables con mayor poder predictivo son consistentemente Information Ratio, Sortino Ratio y Sharpe Ratio — las tres métricas de retorno ajustado por riesgo del dataset — muy por sobre variables de valuación (P/E, P/B, P/S), tamaño (AUM), costo (Expense Ratio) o experiencia del gestor (PM_Yrs). En cuanto a desempeño predictivo, KNN logra la mayor accuracy (85,0%) y CART junto a Random Forest logran el mejor equilibrio general (F1 macro ≈ 0,72–0,73), mientras que SVM es el único modelo que prioriza detectar fondos ganadores por sobre la precisión general (recall clase "1" = 78,4%, el más alto de los cuatro).
+
+
+1. Metodología
+•	Datos: 522 fondos mutuos de EE.UU., 12 variables predictoras (PM_Yrs, AUM USDmm, N_Holdings, Fund_P/E, Fund_P/B, Fund_P/S, Informatio_R, Sortino_R, Sharpe_R, Tracking_Error, Max_Drawdown_Pct, Expense_Ratio). Sin valores faltantes tras la limpieza.
+•	Variable objetivo (label): 1 si el retorno anualizado a 5 años (5yr_TR_Ann) del fondo supera al del benchmark IVV (13,41%); -1 en caso contrario.
+•	Partición de datos: 349 fondos de entrenamiento / 173 de prueba (66% / 34%), estratificada para mantener la proporción de clases.
+•	Modelos y configuración: CART (profundidad máxima = 4), SVM (kernel RBF, variables estandarizadas, class_weight='balanced'), KNN (k=5, variables estandarizadas, ponderación por distancia) y Random Forest (100 árboles, profundidad máxima = 20).
+•	Métricas: Accuracy, F1 macro (no ponderado por clase, más robusto frente al desbalance de clases) y recall/precisión de la clase "1" (fondos que superan al benchmark), por ser la clase de interés y minoritaria.
